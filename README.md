@@ -46,45 +46,55 @@ A powerful NestJS-based API that intelligently matches resumes to job descriptio
 
 ## Installation
 
-```bash
 # Clone the repository
+
 git clone <your-repo-url>
 cd <project-directory>
 
 # Install dependencies
+
 npm install
 
 # Set up environment variables
+
 cp .env.example .env
 
 # Generate Prisma client
+
 npx prisma generate
 
 # Run database migrations
+
 npx prisma migrate dev
 
 # Start the application
+
 npm run start:dev
 🔐 Environment Variables
 Create a .env file in the root directory:
 
 env
+
 # Database
+
 DATABASE_URL=
 
 # JWT Authentication
+
 JWT_SECRET="your-super-secret-jwt-key"
 
 # Cloudinary
+
 CLOUDINARY_CLOUD_NAME="your-cloud-name"
 CLOUDINARY_API_KEY="your-api-key"
 CLOUDINARY_API_SECRET="your-api-secret"
 
 # Hugging Face
+
 HF_TOKEN="hf_your-token-here"
 
-
 ## Database Setup
+
 Install pgvector
 sql
 -- Enable pgvector extension
@@ -92,64 +102,72 @@ CREATE EXTENSION IF NOT EXISTS vector;
 Prisma Schema
 prisma
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  resumes   Resume[]
+id String @id @default(uuid()) @db.Uuid
+name String
+email String @unique
+password String
+createdAt DateTime @default(now())
+resumes Resume[]
 }
 
 model Resume {
-  id        String   @id @default(uuid()) @db.Uuid
-  filename  String
-  fileUrl   String
-  text      String
-  embedding Unsupported("vector(384)")
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+id String @id @default(uuid()) @db.Uuid
+filename String
+fileUrl String
+text String
+embedding Unsupported("vector(384)")
+userId String @db.Uuid
+createdAt DateTime @default(now())
+user User @relation(fields: [userId], references: [id])
 }
-Run Migrations
-bash
+
+## Run Migrations
+
 # Create migration
+
 npx prisma migrate dev --name init
 
 # Apply migration
+
 npx prisma db push
 
 # Reset database (development only)
+
 npx prisma migrate reset
-🚀 Running the Application
-bash
+
+## Running the Application
+
 # Development mode
-npm run start:dev
+
+npm run start
 
 # Production mode
+
 npm run build
 npm run start:prod
 
 # Debug mode
+
 npm run start:debug
 
-
 ## API Documentation
+
 #Authentication Endpoints
 #Sign Up
 POST /users/signup
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
+"name": "John Doe",
+"email": "john@example.com",
+"password": "password123"
 }
 Response:
 
 json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  "user": {"email": ""......}
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+"user": {"email": ""......}
 }
 
 #Login
@@ -157,29 +175,31 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "john@example.com",
-  "password": "password123"
+"email": "john@example.com",
+"password": "password123"
 }
 Response:
 
 json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {"email": "",....}
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+"user": {"email": "",....}
 }
 
 ##Resume Endpoints
 
 #Upload Resumes
-bash
+
 POST /resumes/upload
 Authorization: Bearer <token>
 Content-Type: multipart/form-data
 
 # Upload single file
+
 files: @/path/to/resume.pdf
 
 # Upload multiple files
+
 files: @/path/to/resume1.pdf
 files: @/path/to/resume2.docx
 files: @/path/to/resume3.pdf
@@ -189,10 +209,10 @@ Response:
 
 json
 {
-  "results": [
-    { "fileUrl": "url", "embedding": "[]", "filename": "resume1.pdf".....},
-    { "filename": "resume2.docx" ....}
-  ]
+"results": [
+{ "fileUrl": "url", "embedding": "[]", "filename": "resume1.pdf".....},
+{ "filename": "resume2.docx" ....}
+]
 }
 
 #Get All Resumes
@@ -202,14 +222,14 @@ Response:
 
 json
 {
-  "resumes": [
-    {
-      "id": "uuid",
-      "filename": "resume.pdf",
-      "fileUrl": "https://cloudinary.com/...",
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ]
+"resumes": [
+{
+"id": "uuid",
+"filename": "resume.pdf",
+"fileUrl": "https://cloudinary.com/...",
+"createdAt": "2024-01-01T00:00:00Z"
+}
+]
 }
 
 ##Recommendations Endpoints
@@ -220,11 +240,13 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 # By text
+
 {
-  "text": "Looking for a software engineer with Node.js and React experience"
+"text": "Looking for a software engineer with Node.js and React experience"
 }
 
 # By file upload
+
 POST /recommendations/match
 Authorization: Bearer <token>
 Content-Type: multipart/form-data
@@ -233,21 +255,21 @@ Response:
 
 json
 {
-  "jobDescription": "Looking for a software engineer...",
-  "matches": [
-    {
-      "id": "uuid",
-      "filename": "resume1.pdf",
-      "fileUrl": "https://...",
-      "text": "...",
-      "similarity": 0.89
-    },
-    {
-      "id": "uuid",
-      "filename": "resume2.pdf",
-      "similarity": 0.76
-    }
-  ]
+"jobDescription": "Looking for a software engineer...",
+"matches": [
+{
+"id": "uuid",
+"filename": "resume1.pdf",
+"fileUrl": "https://...",
+"text": "...",
+"similarity": 0.89
+},
+{
+"id": "uuid",
+"filename": "resume2.pdf",
+"similarity": 0.76
+}
+]
 }
 
 ##Cover Letter Endpoints
@@ -257,79 +279,85 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "resumeText": "Software engineer with 5 years experience...",
-  "jobDescription": "Looking for a developer with..."
+"resumeText": "Software engineer with 5 years experience...",
+"jobDescription": "Looking for a developer with..."
 }
 Response:
 
 json
 {
-  "coverLetter": "Dear Hiring Manager,\n\nI am writing to express my interest..."
+"coverLetter": "Dear Hiring Manager,\n\nI am writing to express my interest..."
 }
 
-
 ## Testing
+
 Complete User Flow
-bash
+
 # 1. Sign up
+
 TOKEN=$(curl -s -X POST http://localhost:3001/users/signup \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com","password":"password123"}' \
-  | jq -r '.token')
+ -H "Content-Type: application/json" \
+ -d '{"name":"John Doe","email":"john@example.com","password":"password123"}' \
+ | jq -r '.token')
 
 # 2. Upload resumes
+
 curl -X POST http://localhost:3001/resumes/upload \
-  -H "Authorization: Bearer $TOKEN" \
-  -F "files=@./resume1.pdf" \
-  -F "files=@./resume2.pdf"
+ -H "Authorization: Bearer $TOKEN" \
+ -F "files=@./resume1.pdf" \
+ -F "files=@./resume2.pdf"
 
 # 3. Find matching resumes
+
 curl -X POST http://localhost:3001/recommendations/match \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Looking for a Node.js developer"}'
+ -H "Authorization: Bearer $TOKEN" \
+ -H "Content-Type: application/json" \
+ -d '{"text":"Looking for a Node.js developer"}'
 
 # 4. Generate cover letter
+
 curl -X POST http://localhost:3001/cover-letter/generate \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "resumeText": "Your resume text here",
-    "jobDescription": "Your job description here"
-  }'
+ -H "Authorization: Bearer $TOKEN" \
+ -H "Content-Type: application/json" \
+ -d '{
+"resumeText": "Your resume text here",
+"jobDescription": "Your job description here"
+}'
 
 ## Project Structure
+
 src/
-├── auth/                 # JWT authentication
-│   ├── jwt.guard.ts
-│   └── auth.module.ts
-├── users/               # User management
-│   ├── users.controller.ts
-│   ├── users.service.ts
-│   └── users.module.ts
-├── resumes/             # Resume upload & management
-│   ├── resumes.controller.ts
-│   ├── resumes.service.ts
-│   └── resumes.module.ts
-├── recommendations/     # Resume matching
-│   ├── recommendations.controller.ts
-│   ├── recommendations.service.ts
-│   └── recommendations.module.ts
-├── covers/        # Cover letter generation
-│   ├── covers.controller.ts
-│   ├── covers.service.ts
-│   └── covers.module.ts
-├── functions/           # Utility functions
-│   ├── embedding.service.ts    # Vector embeddings
-│   ├── parser.service.ts        # Document parsing
-│   └── embedding.module.ts
-├── prisma/              # Database
-│   ├── prisma.service.ts
-│   └── prisma.module.ts
-└── cloudinary/          # File storage
-    └── cloudinary.storage.ts
+├── auth/ # JWT authentication
+│ ├── jwt.guard.ts
+│ └── auth.module.ts
+├── users/ # User management
+│ ├── users.controller.ts
+│ ├── users.service.ts
+│ └── users.module.ts
+├── resumes/ # Resume upload & management
+│ ├── resumes.controller.ts
+│ ├── resumes.service.ts
+│ └── resumes.module.ts
+├── recommendations/ # Resume matching
+│ ├── recommendations.controller.ts
+│ ├── recommendations.service.ts
+│ └── recommendations.module.ts
+├── covers/ # Cover letter generation
+│ ├── covers.controller.ts
+│ ├── covers.service.ts
+│ └── covers.module.ts
+├── functions/ # Utility functions
+│ ├── embedding.service.ts # Vector embeddings
+│ ├── parser.service.ts # Document parsing
+│ └── embedding.module.ts
+├── prisma/ # Database
+│ ├── prisma.service.ts
+│ └── prisma.module.ts
+└── cloudinary/ # File storage
+└── cloudinary.storage.ts
 
 ## How It Works
+
 Resume Processing Flow
 Upload → File stored in Cloudinary
 
@@ -359,10 +387,13 @@ Return → Professional cover letter
 Database Connection Issues
 
 # Error: EAI_AGAIN
+
 # Solution: Check internet or restart Neon database
 
 # Error: P1001: Can't reach database
+
 # Solution: Verify DATABASE_URL in .env
+
 Vector Extension Issues
 sql
 -- If vector type doesn't exist
@@ -373,17 +404,18 @@ CREATE EXTENSION IF NOT EXISTS vector;
 Embedding Generation Issues
 
 # First run downloads model (may take time)
+
 # Model is cached after first use
 
 # If out of memory, try smaller batch sizes
+
 Cloudinary Issues
 
 # Verify credentials
+
 npx cloudinary-cli info
 
 # Test upload directly
+
 curl -X POST "https://api.cloudinary.com/v1_1/your-cloud/auto/upload" \
-  -F "file=@test.pdf"
-
-
-```
+ -F "file=@test.pdf"
