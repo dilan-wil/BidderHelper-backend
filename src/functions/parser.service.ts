@@ -11,7 +11,6 @@ export class ParserService {
       const buffer = Buffer.from(await response.arrayBuffer());
 
       const ast = await officeParser.parseOffice(buffer);
-      console.log(ast);
 
       return ast.toText();
     }

@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ResumesModule } from './resumes/resumes.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
+import { CoversModule } from './covers/covers.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
     AuthModule,
     ResumesModule,
     RecommendationsModule,
+    CoversModule,
   ],
   controllers: [AppController],
   providers: [AppService],

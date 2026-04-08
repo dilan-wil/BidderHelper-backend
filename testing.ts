@@ -1,20 +1,33 @@
-// Create a feature-extraction pipeline
-async function test() {
+// Create a text-generation pipeline
+async function generateCoverLetter() {
   const { pipeline } = await import('@huggingface/transformers');
-  const extractor = await pipeline('feature-extraction');
 
-  // Compute embeddings
-  const texts = ['Hello'];
+  // Specify a model for text generation
+  const generator = await pipeline(
+    'text-generation',
+    'Xenova/llama2.c-stories15M',
+  );
 
-  const embeddings = await extractor(texts, {
-    pooling: 'mean', // This does the pooling for you!
-    normalize: true,
+  const resumeText =
+    'Software engineer with 5 years experience in Node.js, React, and PostgreSQL. Led a team of 4 developers. Built scalable microservices.';
+  const jobDescription =
+    'Looking for a senior developer with Node.js and React expertise. Must have leadership experience.';
+
+  const prompt = `Write a professional cover letter based on this resume and job description.
+  RESUME:
+  ${resumeText}
+
+  JOB DESCRIPTION:
+  ${jobDescription}
+
+  COVER LETTER:`;
+
+  const result = await generator(prompt, {
+    max_new_tokens: 300,
+    temperature: 0.7,
   });
-  console.log(embeddings.ort_tensor.data.length);
-  // [
-  //   [-0.016986183822155, 0.03228696808218956, -0.0013630966423079371, ... ],
-  //   [0.09050482511520386, 0.07207386940717697, 0.05762749910354614, ... ],
-  // ]
+
+  console.log(result[0].generated_text);
 }
 
-test();
+generateCoverLetter();
