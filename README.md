@@ -55,7 +55,7 @@ cd <project-directory>
 # Install dependencies
 
 npm install
-
+npm i -g @nestjs/cli
 # Set up environment variables
 
 cp .env.example .env
