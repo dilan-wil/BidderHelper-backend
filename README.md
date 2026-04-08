@@ -306,28 +306,28 @@ Complete User Flow
 
 # 1. Sign up
 
-TOKEN=$(curl -s -X POST http://localhost:3000/users/signup \
+TOKEN=$(curl -s -X POST http://localhost:3001/users/signup \
  -H "Content-Type: application/json" \
  -d '{"name":"John Doe","email":"john@example.com","password":"password123"}' \
  | jq -r '.token')
 
 # 2. Upload resumes
 
-curl -X POST http://localhost:3000/resumes/upload \
+curl -X POST http://localhost:3001/resumes/upload \
  -H "Authorization: Bearer $TOKEN" \
  -F "files=@./resume1.pdf" \
  -F "files=@./resume2.pdf"
 
 # 3. Find matching resumes
 
-curl -X POST http://localhost:3000/recommendations/match \
+curl -X POST http://localhost:3001/recommendations/match \
  -H "Authorization: Bearer $TOKEN" \
  -H "Content-Type: application/json" \
  -d '{"text":"Looking for a Node.js developer"}'
 
 # 4. Generate cover letter
 
-curl -X POST http://localhost:3000/cover-letter/generate \
+curl -X POST http://localhost:3001/cover-letter/generate \
  -H "Authorization: Bearer $TOKEN" \
  -H "Content-Type: application/json" \
  -d '{

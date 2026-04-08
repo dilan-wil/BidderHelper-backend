@@ -6,6 +6,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    // Allow requests from your localhost(I will never forget what happened that day haha)
+    origin: ['http://localhost:3000'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
+
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('BidderHelper')
@@ -51,7 +59,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(3000);
-  console.log(`API Documentation: http://localhost:3000/api-docs`);
+  await app.listen(3001);
+  console.log(`API Documentation: http://localhost:3001/api-docs`);
 }
 bootstrap();
