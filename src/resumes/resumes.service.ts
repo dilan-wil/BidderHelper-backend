@@ -21,18 +21,19 @@ export class ResumesService {
 
     for (const file of fileList) {
       const text = await this.parser.extractText(file);
+
       const embedding = await this.embed.embed(text);
       const vectorString = `[${Array.from(embedding).join(',')}]`;
 
       const result = await this.prisma.$queryRaw`
         INSERT INTO "Resume" (id, filename, "fileUrl", text, embedding, "userId", "createdAt")
         VALUES (
-          gen_random_uuid(), 
-          ${file.originalname}, 
-          ${file.path}, 
-          ${text}, 
-          ${vectorString}::vector(384), 
-          ${userId}::uuid, 
+          gen_random_uuid(),
+          ${file.originalname},
+          ${file.path},
+          ${text},
+          ${vectorString}::vector(384),
+          ${userId}::uuid,
           NOW()
         )
         RETURNING id, filename, "fileUrl", text, "userId", "createdAt"
@@ -44,7 +45,7 @@ export class ResumesService {
     return results;
   }
 
-  async findAll(userId: string) {
+  async findAllByUserId(userId: string) {
     return this.prisma.resume.findMany({
       where: { userId },
       select: {
@@ -58,6 +59,12 @@ export class ResumesService {
 
   async findOne(id: string, userId: string) {
     return this.prisma.resume.findFirst({
+      where: { id, userId },
+    });
+  }
+
+  async deleteOne(id: string, userId: string) {
+    return this.prisma.resume.delete({
       where: { id, userId },
     });
   }

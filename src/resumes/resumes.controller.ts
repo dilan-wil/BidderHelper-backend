@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
@@ -31,13 +32,19 @@ export class ResumesController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: any) {
-    return this.service.findAll(req.user.id);
+  async findAllByUserId(@Req() req: any) {
+    return this.service.findAllByUserId(req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.service.findOne(id, req.user.id);
+  async findOne(@Param('id') id: string, @Req() req) {
+    return this.service.findOne(id, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteOne(@Param('id') id: string, @Req() req) {
+    return this.service.deleteOne(id, req.user.userId);
   }
 }
