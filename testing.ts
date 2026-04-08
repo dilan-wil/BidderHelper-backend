@@ -1,30 +1,23 @@
-// Create a text-generation pipeline
 async function generateCoverLetter() {
   const { pipeline } = await import('@huggingface/transformers');
 
-  // Specify a model for text generation
-  const generator = await pipeline(
-    'text-generation',
-    'Xenova/llama2.c-stories15M',
-  );
-
+  // Use a better model
+  const generator = await pipeline('text-generation');
   const resumeText =
-    'Software engineer with 5 years experience in Node.js, React, and PostgreSQL. Led a team of 4 developers. Built scalable microservices.';
+    "John Doe - Software Engineer. Experienced in Node.js, TypeScript, React, and PostgreSQL. Previously worked at Tech Corp building REST APIs and microservices. Led a team of 3 developers. Bachelor's in Computer Science.";
+
   const jobDescription =
-    'Looking for a senior developer with Node.js and React expertise. Must have leadership experience.';
+    'We need a Full Stack Developer with Node.js and React experience. Must be a team player and have good communication skills.';
 
-  const prompt = `Write a professional cover letter based on this resume and job description.
-  RESUME:
-  ${resumeText}
+  const prompt = `Write a short cover letter:
 
-  JOB DESCRIPTION:
-  ${jobDescription}
-
-  COVER LETTER:`;
+Resume: ${resumeText}
+Job: ${jobDescription}
+Cover letter:`;
 
   const result = await generator(prompt, {
-    max_new_tokens: 300,
-    temperature: 0.7,
+    max_new_tokens: 200,
+    temperature: 0.8,
   });
 
   console.log(result[0].generated_text);

@@ -4,6 +4,6 @@ import { CoversService } from './covers.service';
 
 @Module({
   controllers: [CoversController],
-  providers: [CoversService]
+  providers: [CoversService],
 })
 export class CoversModule {}
