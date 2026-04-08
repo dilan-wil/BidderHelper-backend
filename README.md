@@ -46,6 +46,7 @@ A powerful NestJS-based API that intelligently matches resumes to job descriptio
 
 ## Installation
 
+```bash
 # Clone the repository
 
 git clone <your-repo-url>
@@ -69,8 +70,12 @@ npx prisma migrate dev
 
 # Start the application
 
-npm run start:dev
-🔐 Environment Variables
+npm run start
+```
+
+## Environment Variables
+
+```bash
 Create a .env file in the root directory:
 
 env
@@ -92,9 +97,11 @@ CLOUDINARY_API_SECRET="your-api-secret"
 # Hugging Face
 
 HF_TOKEN="hf_your-token-here"
+```
 
 ## Database Setup
 
+```bash
 Install pgvector
 sql
 -- Enable pgvector extension
@@ -149,9 +156,11 @@ npm run start:prod
 # Debug mode
 
 npm run start:debug
+```
 
 ## API Documentation
 
+```bash
 #Authentication Endpoints
 #Sign Up
 POST /users/signup
@@ -288,9 +297,11 @@ json
 {
 "coverLetter": "Dear Hiring Manager,\n\nI am writing to express my interest..."
 }
+```
 
 ## Testing
 
+```bash
 Complete User Flow
 
 # 1. Sign up
@@ -323,9 +334,11 @@ curl -X POST http://localhost:3001/cover-letter/generate \
 "resumeText": "Your resume text here",
 "jobDescription": "Your job description here"
 }'
+```
 
 ## Project Structure
 
+```bash
 src/
 ├── auth/ # JWT authentication
 │ ├── jwt.guard.ts
@@ -355,9 +368,11 @@ src/
 │ └── prisma.module.ts
 └── cloudinary/ # File storage
 └── cloudinary.storage.ts
+```
 
 ## How It Works
 
+```bash
 Resume Processing Flow
 Upload → File stored in Cloudinary
 
@@ -382,8 +397,11 @@ Input → Resume text + Job description
 Generate → AI creates personalized cover letter
 
 Return → Professional cover letter
+```
 
-⚠️ Troubleshooting
+## Troubleshooting
+
+```bash
 Database Connection Issues
 
 # Error: EAI_AGAIN
@@ -419,3 +437,4 @@ npx cloudinary-cli info
 
 curl -X POST "https://api.cloudinary.com/v1_1/your-cloud/auto/upload" \
  -F "file=@test.pdf"
+```
