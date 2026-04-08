@@ -14,4 +14,17 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  resumes   Resume[]
+}
+
+model Resume {
+  id        String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  filename  String
+  fileUrl   String
+  text      String
+  embedding Unsupported("vector(384)")?
+  userId    String                 @db.Uuid
+  createdAt DateTime?              @default(now()) @db.Timestamp(6)
+
+  user User @relation(fields: [userId], references: [id])
 }
