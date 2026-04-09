@@ -28,11 +28,9 @@ CREATE TABLE "Resume" (
 CREATE TABLE "Match" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
-    "resumeId" UUID NOT NULL,
     "jobDescription" TEXT NOT NULL,
     "jobTitle" TEXT,
-    "similarityScore" DOUBLE PRECISION NOT NULL,
-    "rank" INTEGER NOT NULL,
+    "matchedResumes" JSONB NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Match_pkey" PRIMARY KEY ("id")
@@ -45,7 +43,7 @@ CREATE TABLE "Cover" (
     "resumeId" UUID NOT NULL,
     "jobDescription" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "generatedFromMatchId" UUID,
+    "matchId" UUID,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Cover_pkey" PRIMARY KEY ("id")
@@ -58,9 +56,6 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "Match_userId_idx" ON "Match"("userId");
 
 -- CreateIndex
-CREATE INDEX "Match_resumeId_idx" ON "Match"("resumeId");
-
--- CreateIndex
 CREATE INDEX "Match_createdAt_idx" ON "Match"("createdAt");
 
 -- CreateIndex
@@ -70,7 +65,7 @@ CREATE INDEX "Cover_userId_idx" ON "Cover"("userId");
 CREATE INDEX "Cover_resumeId_idx" ON "Cover"("resumeId");
 
 -- CreateIndex
-CREATE INDEX "Cover_createdAt_idx" ON "Cover"("createdAt");
+CREATE INDEX "Cover_matchId_idx" ON "Cover"("matchId");
 
 -- AddForeignKey
 ALTER TABLE "Resume" ADD CONSTRAINT "Resume_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -79,13 +74,10 @@ ALTER TABLE "Resume" ADD CONSTRAINT "Resume_userId_fkey" FOREIGN KEY ("userId") 
 ALTER TABLE "Match" ADD CONSTRAINT "Match_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Match" ADD CONSTRAINT "Match_resumeId_fkey" FOREIGN KEY ("resumeId") REFERENCES "Resume"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Cover" ADD CONSTRAINT "Cover_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Cover" ADD CONSTRAINT "Cover_resumeId_fkey" FOREIGN KEY ("resumeId") REFERENCES "Resume"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Cover" ADD CONSTRAINT "Cover_generatedFromMatchId_fkey" FOREIGN KEY ("generatedFromMatchId") REFERENCES "Match"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Cover" ADD CONSTRAINT "Cover_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "Match"("id") ON DELETE SET NULL ON UPDATE CASCADE;
