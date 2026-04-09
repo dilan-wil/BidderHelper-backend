@@ -15,6 +15,8 @@ model User {
   password  String
   createdAt DateTime @default(now())
   resumes   Resume[]
+  matches   Match[]
+  covers Cover[]
 }
 
 model Resume {
@@ -22,9 +24,46 @@ model Resume {
   filename  String
   fileUrl   String
   text      String
+  fileSize  Int
+  fileType  String
   embedding Unsupported("vector(384)")?
   userId    String                 @db.Uuid
   createdAt DateTime?              @default(now()) @db.Timestamp(6)
 
   user User @relation(fields: [userId], references: [id])
+  covers       Cover[]
+  
+}
+
+model Match {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @db.Uuid
+  jobDescription  String   @db.Text
+  jobTitle        String?
+  matchedResumes  Json   
+  createdAt       DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  covers Cover[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Cover {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @db.Uuid
+  resumeId             String   @db.Uuid
+  jobDescription       String   @db.Text
+  content              String   @db.Text
+  matchId              String?  @db.Uuid
+  createdAt            DateTime @default(now())
+
+  user User    @relation(fields: [userId], references: [id])
+  resume Resume @relation(fields: [resumeId], references: [id])
+  match  Match? @relation(fields: [matchId], references: [id])
+
+  @@index([userId])
+  @@index([resumeId])
+  @@index([matchId])
 }

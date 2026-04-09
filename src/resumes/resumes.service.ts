@@ -26,12 +26,14 @@ export class ResumesService {
       const vectorString = `[${Array.from(embedding).join(',')}]`;
 
       const result = await this.prisma.$queryRaw`
-        INSERT INTO "Resume" (id, filename, "fileUrl", text, embedding, "userId", "createdAt")
+        INSERT INTO "Resume" (id, filename, "fileUrl", text, "fileSize", "fileType", embedding, "userId", "createdAt")
         VALUES (
           gen_random_uuid(),
           ${file.originalname},
           ${file.path},
           ${text},
+          ${file.size},
+          ${file.mimetype},
           ${vectorString}::vector(384),
           ${userId}::uuid,
           NOW()

@@ -1,12 +1,14 @@
-// recommendations.controller.ts
+// recommendations/recommendations.controller.ts
 import {
   Controller,
   Post,
   Body,
-  UploadedFile,
   UseInterceptors,
+  UploadedFile,
   UseGuards,
   Req,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RecommendationsService } from './recommendations.service';
@@ -31,9 +33,19 @@ export class RecommendationsController {
     }
 
     return this.recommendationsService.findMatchingResumes(
-      req.user.userId,
+      req.user.id,
       text,
       file,
     );
+  }
+
+  @Get('history')
+  async getHistory(@Req() req: any) {
+    return this.recommendationsService.getMatchHistory(req.user.id);
+  }
+
+  @Get(':id')
+  async getMatch(@Req() req: any, @Param('id') id: string) {
+    return this.recommendationsService.getMatchById(id, req.user.id);
   }
 }

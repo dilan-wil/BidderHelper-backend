@@ -1,26 +1,63 @@
-// cover-letter.controller.ts
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+// covers/covers.controller.ts
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Get,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CoversService } from './covers.service';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 
 @Controller('covers')
 @UseGuards(JwtAuthGuard)
 export class CoversController {
-  constructor(private readonly coverLetterService: CoversService) {}
+  constructor(private readonly coversService: CoversService) {}
 
   @Post('generate')
   async generateCoverLetter(
     @Req() req: any,
+    @Body('resumeId') resumeId: string,
     @Body('jobDescription') jobDescription: string,
-    @Body('resumeText') resumeText: string,
+    @Body('matchId') matchId?: string,
   ) {
-    if (!jobDescription || !resumeText) {
-      throw new Error('Both jobDescription and resumeText are required');
+    if (!resumeId || !jobDescription) {
+      throw new Error('resumeId and jobDescription are required');
     }
 
-    return this.coverLetterService.generateCoverLetter(
-      resumeText,
+    return this.coversService.generateAndSave(
+      req.user.id,
+      resumeId,
       jobDescription,
+      matchId,
     );
+  }
+
+  @Get()
+  async getAllCovers(@Req() req: any) {
+    return this.coversService.getUserCovers(req.user.id);
+  }
+
+  @Get(':id')
+  async getCoverById(@Req() req: any, @Param('id') id: string) {
+    return this.coversService.getCoverById(id, req.user.id);
+  }
+
+  @Delete(':id')
+  async deleteCover(@Req() req: any, @Param('id') id: string) {
+    return this.coversService.deleteCover(id, req.user.id);
+  }
+
+  @Post(':id/regenerate')
+  async regenerateCover(@Req() req: any, @Param('id') id: string) {
+    return this.coversService.regenerateCover(id, req.user.id);
+  }
+
+  @Get('match/:matchId')
+  async getCoversByMatch(@Req() req: any, @Param('matchId') matchId: string) {
+    return this.coversService.getCoversByMatch(matchId, req.user.id);
   }
 }
