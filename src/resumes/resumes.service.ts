@@ -55,6 +55,8 @@ export class ResumesService {
         filename: true,
         fileUrl: true,
         text: true,
+        fileType: true,
+        fileSize: true,
         createdAt: true,
       },
     });
