@@ -28,7 +28,7 @@ export class RecommendationsService {
 
     // 2. Generate embedding for job description
     const jobEmbedding = await this.embeddingService.embed(jobDescription);
-    const embeddingString = Array.from(jobEmbedding).join(' ');
+    const embeddingString = `[${Array.from(jobEmbedding).join(',')}]`;
 
     // 3. Find top 3 matching resumes
     const matches = await this.prisma.$queryRaw<any[]>`
