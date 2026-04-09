@@ -8,7 +8,7 @@ async function bootstrap() {
 
   app.enableCors({
     // Allow requests from your localhost(I will never forget what happened that day haha)
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'https://qpfc6n-3000.csb.app/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Authorization',
