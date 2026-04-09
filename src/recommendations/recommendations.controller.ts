@@ -33,7 +33,7 @@ export class RecommendationsController {
     }
 
     return this.recommendationsService.findMatchingResumes(
-      req.user.id,
+      req.user.userId,
       text,
       file,
     );
@@ -41,11 +41,11 @@ export class RecommendationsController {
 
   @Get('history')
   async getHistory(@Req() req: any) {
-    return this.recommendationsService.getMatchHistory(req.user.id);
+    return this.recommendationsService.getMatchHistory(req.user.userId);
   }
 
   @Get(':id')
   async getMatch(@Req() req: any, @Param('id') id: string) {
-    return this.recommendationsService.getMatchById(id, req.user.id);
+    return this.recommendationsService.getMatchById(id, req.user.userId);
   }
 }
