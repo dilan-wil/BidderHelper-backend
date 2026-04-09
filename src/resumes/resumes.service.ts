@@ -52,6 +52,7 @@ export class ResumesService {
         id: true,
         filename: true,
         fileUrl: true,
+        text: true,
         createdAt: true,
       },
     });
