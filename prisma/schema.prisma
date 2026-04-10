@@ -26,7 +26,7 @@ model Resume {
   text      String
   fileSize  Int
   fileType  String
-  embedding Unsupported("vector(384)")?
+  embedding Unsupported("vector(1536)")?
   userId    String                 @db.Uuid
   createdAt DateTime?              @default(now()) @db.Timestamp(6)
 

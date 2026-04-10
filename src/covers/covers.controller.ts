@@ -1,4 +1,3 @@
-// covers/covers.controller.ts
 import {
   Controller,
   Post,

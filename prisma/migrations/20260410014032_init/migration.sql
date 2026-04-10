@@ -17,7 +17,7 @@ CREATE TABLE "Resume" (
     "text" TEXT NOT NULL,
     "fileSize" INTEGER NOT NULL,
     "fileType" TEXT NOT NULL,
-    "embedding" vector(384),
+    "embedding" vector(1536),
     "userId" UUID NOT NULL,
     "createdAt" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
 

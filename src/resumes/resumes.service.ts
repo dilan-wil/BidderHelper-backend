@@ -34,7 +34,7 @@ export class ResumesService {
           ${text},
           ${file.size},
           ${file.mimetype},
-          ${vectorString}::vector(384),
+          ${vectorString}::vector(1536),
           ${userId}::uuid,
           NOW()
         )

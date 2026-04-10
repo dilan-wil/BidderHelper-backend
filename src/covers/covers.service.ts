@@ -1,23 +1,26 @@
-// covers/covers.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CoversService {
-  private generator: any = null;
+  private ai: any = null;
 
   constructor(private prisma: PrismaService) {}
 
-  private async getGenerator() {
-    if (!this.generator) {
-      const { pipeline } = await import('@huggingface/transformers');
-      this.generator = await pipeline('text-generation');
+  private async getAI() {
+    if (!this.ai) {
+      const { GoogleGenAI } = await import('@google/genai');
+
+      this.ai = new GoogleGenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+      });
     }
-    return this.generator;
+
+    return this.ai;
   }
 
   async generateCoverLetter(resumeText: string, jobDescription: string) {
-    const generator = await this.getGenerator();
+    const ai = await this.getAI();
 
     const prompt = `Write a professional cover letter based on the following resume and job description.
 
@@ -29,16 +32,19 @@ ${jobDescription.slice(0, 500)}
 
 COVER LETTER:`;
 
-    const result = await generator(prompt, {
-      max_new_tokens: 400,
-      temperature: 0.7,
-      do_sample: true,
-    });
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+      });
 
-    let coverLetter = result[0].generated_text;
-    coverLetter = coverLetter.replace(prompt, '').trim();
-
-    return { coverLetter };
+      return {
+        coverLetter: response.text || 'Failed to generate cover letter',
+      };
+    } catch (error) {
+      console.error('Gemini error:', error);
+      throw new Error('Failed to generate cover letter');
+    }
   }
 
   async generateAndSave(
@@ -47,7 +53,6 @@ COVER LETTER:`;
     jobDescription: string,
     matchId?: string,
   ) {
-    // Get resume text
     const resume = await this.prisma.resume.findFirst({
       where: { id: resumeId, userId },
     });
@@ -56,13 +61,11 @@ COVER LETTER:`;
       throw new Error('Resume not found');
     }
 
-    // Generate cover letter
     const { coverLetter } = await this.generateCoverLetter(
       resume.text,
       jobDescription,
     );
 
-    // Save to database
     const saved = await this.prisma.cover.create({
       data: {
         userId,
@@ -145,13 +148,11 @@ COVER LETTER:`;
       throw new Error('Cover letter not found');
     }
 
-    // Generate new cover letter
     const { coverLetter } = await this.generateCoverLetter(
       existing.resume.text,
       existing.jobDescription,
     );
 
-    // Update existing record
     const updated = await this.prisma.cover.update({
       where: { id },
       data: { content: coverLetter },

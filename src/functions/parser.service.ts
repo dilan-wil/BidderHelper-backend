@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PDFParse } from 'pdf-parse';
-import * as mammoth from 'mammoth';
 import * as officeParser from 'officeparser';
 
 @Injectable()

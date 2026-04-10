@@ -1,26 +1,15 @@
-async function generateCoverLetter() {
-  const { pipeline } = await import('@huggingface/transformers');
+// The client gets the API key from the environment variable `GEMINI_API_KEY`.
+require('dotenv').config();
 
-  // Use a better model
-  const generator = await pipeline('text-generation');
-  const resumeText =
-    "John Doe - Software Engineer. Experienced in Node.js, TypeScript, React, and PostgreSQL. Previously worked at Tech Corp building REST APIs and microservices. Led a team of 3 developers. Bachelor's in Computer Science.";
+async function main() {
+  const { GoogleGenAI } = await import('@google/genai');
+  const ai = new GoogleGenAI({});
 
-  const jobDescription =
-    'We need a Full Stack Developer with Node.js and React experience. Must be a team player and have good communication skills.';
-
-  const prompt = `Write a short cover letter:
-
-Resume: ${resumeText}
-Job: ${jobDescription}
-Cover letter:`;
-
-  const result = await generator(prompt, {
-    max_new_tokens: 200,
-    temperature: 0.8,
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: 'Explain how AI works in a few words',
   });
-
-  console.log(result[0].generated_text);
+  console.log(response.text);
 }
 
-generateCoverLetter();
+main();
